@@ -1,0 +1,461 @@
+================================================================================
+                         LOVELY PROFESSIONAL UNIVERSITY
+                 School of Computer Science and Engineering
+                               PROJECT REPORT
+================================================================================
+
+                                   ECOM-SHOP
+         MongoDB & PyMongo-Based Electronics & Mobile Store Management Application
+
+--------------------------------------------------------------------------------
+STUDENT DETAILS:
+Name                    : Shubham Panwar
+Registration No.        : [Your Registration No. e.g., 123XXXXX]
+Roll No.                : [Your Roll No. e.g., XX]
+Academic Task Number    : 2
+Course Code             : CSE 494
+Course Title            : Intelligent NoSQL Databases
+
+PROJECT LINKS:
+GitHub Repository       : https://github.com/shubhamp476/ecom-shop.git
+Live Deployed URL       : https://ecommobileshop.vercel.app/
+================================================================================
+
+1. ABSTRACT
+--------------------------------------------------------------------------------
+Ecom-Shop is an advanced, high-performance electronics and smartphone e-commerce 
+platform and catalog management system designed to streamline online merchandising, 
+multi-tier category organization, real-time inventory tracking, and dynamic pricing. 
+Unlike conventional relational database architectures where rigid schemas struggle 
+with the highly heterogeneous technical specifications of modern consumer electronics 
+(such as varying camera sensors, processors, display refresh rates, and storage 
+configurations), this project utilizes MongoDB as its primary NoSQL document-oriented 
+database.
+
+Python serves as the core data processing and business logic orchestrator, leveraging 
+PyMongo—the official MongoDB driver—to execute robust document design patterns, schema 
+validation, atomic CRUD operations, and multi-stage aggregation pipelines. The frontend 
+provides a seamless, responsive storefront and an executive admin management panel 
+for real-time catalog updates and stock adjustments. Pandas is integrated for tabular 
+data handling, bulk record manipulation, and analytical summaries.
+
+This report satisfies the academic requirements of CSE 494 (Intelligent NoSQL 
+Databases), detailing document modeling, validation constraints, PyMongo integration, 
+complex aggregations for sales and stock insights, comprehensive testing, and live 
+deployment.
+
+
+2. PROBLEM STATEMENT
+--------------------------------------------------------------------------------
+Consumer electronics and mobile devices represent one of the most dynamic sectors 
+in retail. Traditional relational database management systems (RDBMS) impose fixed 
+table schemas and extensive normalization (JOIN tables), which present significant 
+drawbacks:
+1. Heterogeneous Attributes: A smartphone has specifications like RAM, camera MP, 
+   battery mAh, and 5G bands, whereas a laptop has CPU architecture, GPU memory, 
+   and SSD slots. Modeling these in SQL requires excessive NULL fields or unwieldy 
+   Entity-Attribute-Value (EAV) designs.
+2. Hierarchical Categories: Categorization requires multi-level nesting (e.g., 
+   Smartphones -> Flagship / Foldables / Budget, Laptops -> Ultrabooks / Gaming).
+3. Real-Time Inventory & Price Volatility: Flash sales, discount rules, and rapid 
+   stock changes demand low-latency atomic updates without table-locking overhead.
+4. Administrative Bottlenecks: Without automated aggregation, computing category-wise 
+   revenue, brand performance, and low-stock alerts becomes computationally expensive.
+
+Ecom-Shop addresses these challenges by storing electronic products as flexible BSON 
+documents in MongoDB, handled via PyMongo scripts, providing agile querying, sub-document 
+nesting, and aggregation framework efficiency.
+
+
+3. OBJECTIVES
+--------------------------------------------------------------------------------
+• Model and maintain comprehensive electronics and smartphone catalog records in a 
+  MongoDB document collection.
+• Support multi-tier hierarchical classification (categories, subcategories, and 
+  brand associations).
+• Establish rigid validation rules at both application and database layers to guarantee 
+  data consistency (positive prices, valid SKUs, and non-empty titles).
+• Implement complete Create, Read, Update, and Delete (CRUD) operations via PyMongo.
+• Utilize the MongoDB Aggregation Pipeline to generate real-time analytical reports, 
+  including category-wise stock value, brand revenue breakdowns, and low-inventory 
+  monitoring.
+• Integrate Python application logic with MongoDB using PyMongo and provide tabular 
+  export/import capabilities via Pandas.
+• Demonstrate the project through a deployed web application and public GitHub repository.
+
+
+4. TECHNOLOGY STACK
+--------------------------------------------------------------------------------
+Technology       | Purpose                 | Role in this Project
+-----------------|-------------------------|-----------------------------------------------------------
+Python           | Application Logic       | Handles business rules, data transformations, and scripting.
+MongoDB          | NoSQL Document Database | Stores products, categories, orders, and logs as BSON documents.
+PyMongo          | Official Database Driver| Connects Python code directly to MongoDB for all CRUD & aggregations.
+Web Frontend     | User & Admin Interface  | Provides responsive storefront browsing and executive admin panel.
+Pandas           | Tabular Data Processing | Structures product data into DataFrames for bulk analysis & CSV export.
+Vercel / Cloud   | Deployment & Hosting    | Production deployment of web client and API endpoints.
+
+
+5. SYSTEM OVERVIEW & ARCHITECTURE
+--------------------------------------------------------------------------------
+The system architecture follows a clean, decoupled design:
+
+[User / Admin]
+       │
+       ▼
+[Interactive Web Client (Storefront & Admin Console)]
+       │
+       ▼  (HTTP / RESTful API Requests)
+[Python Application Layer (Business Logic & Validation)]
+       │
+       ▼  (PyMongo Driver Protocol)
+[MongoDB Atlas / Local Instance (ecom_shop_db)]
+       ├── Collection: products
+       ├── Collection: categories
+       ├── Collection: orders
+       └── Collection: inventory_logs
+       │
+       ▲  (BSON Queries / Aggregation Pipelines)
+[Analytics & Reports Engine (Pandas Summaries & DataFrames)]
+
+Data Flow:
+1. Customer / Admin browses or updates products, categories, or prices.
+2. The Python backend validates input constraints (non-empty fields, positive numbers).
+3. PyMongo converts inputs into BSON documents and persists them to MongoDB collections.
+4. When analytical metrics or catalog filters are requested, MongoDB executes aggregation 
+   pipelines and returns structured documents.
+5. Pandas organizes document results into tabular DataFrames for display and reporting.
+
+
+6. DATABASE AND DOCUMENT DESIGN
+--------------------------------------------------------------------------------
+Database Name : ecom_shop_db
+Primary Collections:
+  1. products       : Detailed electronic items, specs, pricing, and stock.
+  2. categories     : Parent categories and nested subcategories.
+  3. orders         : Customer orders, transaction amounts, and item references.
+  4. inventory_logs : Historical audit trail of stock adjustments.
+
+Sample Document from 'products' Collection:
+{
+  "_id": ObjectId("662a1b9f4e2d8a001f3b8901"),
+  "title": "Samsung Galaxy S24 Ultra",
+  "slug": "samsung-galaxy-s24-ultra",
+  "sku": "SM-S928B-512",
+  "brand": "Samsung",
+  "category": "Smartphones",
+  "subCategory": "Flagship Phones",
+  "price": 129999,
+  "comparePrice": 139999,
+  "costPrice": 108000,
+  "stock": 45,
+  "status": "published",
+  "rating": 4.9,
+  "reviewCount": 128,
+  "specs": {
+    "display": "6.8 inch Dynamic AMOLED 2X, 120Hz",
+    "processor": "Snapdragon 8 Gen 3",
+    "ram": "12GB",
+    "storage": "512GB",
+    "battery": "5000 mAh",
+    "camera": "200MP + 50MP + 12MP + 10MP"
+  },
+  "tags": ["flagship", "5g", "ai-phone", "stylus"],
+  "isFeatured": true,
+  "created_at": ISODate("2026-10-15T10:30:00Z"),
+  "updated_at": ISODate("2026-10-19T14:00:00Z")
+}
+
+Sample Document from 'categories' Collection:
+{
+  "_id": ObjectId("662a1b9f4e2d8a001f3b8915"),
+  "name": "Smartphones",
+  "slug": "smartphones",
+  "subCategories": [
+    {
+      "name": "Flagship Phones",
+      "slug": "flagship-phones",
+      "productCount": 18
+    },
+    {
+      "name": "Foldables & Flip",
+      "slug": "foldables-flip",
+      "productCount": 6
+    },
+    {
+      "name": "Mid-Range & Budget",
+      "slug": "mid-range-budget",
+      "productCount": 24
+    }
+  ],
+  "displayOrder": 1,
+  "isActive": true
+}
+
+
+7. VALIDATION RULES
+--------------------------------------------------------------------------------
+To maintain database integrity, strict validation is applied:
+1. title        : Required, string, trimmed length between 3 and 150 characters.
+2. sku          : Required, unique uppercase string identifier.
+3. price        : Required numeric value (integer/float), strictly greater than 0.
+4. costPrice    : Numeric value, must not exceed selling price (for positive margin).
+5. stock        : Required integer, minimum value 0 (cannot be negative).
+6. category     : Required string, must correspond to a valid active category.
+7. status       : Enum strictly restricted to: ["draft", "published", "archived"].
+
+MongoDB Collection-Level JSON Schema Validator (Sample):
+{
+  "$jsonSchema": {
+    "bsonType": "object",
+    "required": ["title", "sku", "price", "stock", "category", "status"],
+    "properties": {
+      "title": {
+        "bsonType": "string",
+        "description": "Product title must be a non-empty string"
+      },
+      "sku": {
+        "bsonType": "string",
+        "description": "Unique SKU is required"
+      },
+      "price": {
+        "bsonType": ["double", "int", "long"],
+        "minimum": 0.01,
+        "description": "Price must be a positive number"
+      },
+      "stock": {
+        "bsonType": "int",
+        "minimum": 0,
+        "description": "Stock count cannot be negative"
+      },
+      "status": {
+        "enum": ["draft", "published", "archived"],
+        "description": "Status must be either draft, published, or archived"
+      }
+    }
+  }
+}
+
+
+8. CRUD OPERATIONS
+--------------------------------------------------------------------------------
+Operation  | PyMongo Method   | Purpose & Implementation in Ecom-Shop
+-----------|------------------|---------------------------------------------------------------
+Create     | insert_one()     | Adds a newly created mobile/electronic product document.
+           | insert_many()    | Bulk loads initial catalog products from dataset.
+Read       | find_one()       | Fetches single product details by _id, slug, or SKU.
+           | find()           | Retrieves products matching category, search text, or brand.
+Update     | update_one()     | Modifies price, stock count, or status of a specific item.
+           | update_many()    | Executes bulk price discounts across an entire category.
+Delete     | delete_one()     | Removes an obsolete product or archived record.
+
+
+9. AGGREGATION AND USEFUL REPORTS
+--------------------------------------------------------------------------------
+The MongoDB Aggregation Framework delivers high-speed analytics on the server side:
+
+Report 1: Total Stock Count & Inventory Valuation by Category
+-------------------------------------------------------------
+db.products.aggregate([
+  { $match: { status: "published" } },
+  {
+    $group: {
+      _id: "$category",
+      totalProducts: { $sum: 1 },
+      totalStockUnits: { $sum: "$stock" },
+      totalInventoryValue: { $sum: { $multiply: ["$price", "$stock"] } },
+      averagePrice: { $avg: "$price" }
+    }
+  },
+  { $sort: { totalInventoryValue: -1 } }
+])
+Explanation: Groups all published products by their primary category, computes total 
+available units, calculates the total inventory monetary value in INR, calculates the 
+average product price, and sorts from highest to lowest valuation.
+
+Report 2: Brand Performance and Average Rating
+----------------------------------------------
+db.products.aggregate([
+  {
+    $group: {
+      _id: "$brand",
+      productCount: { $sum: 1 },
+      avgRating: { $avg: "$rating" },
+      minPrice: { $min: "$price" },
+      maxPrice: { $max: "$price" }
+    }
+  },
+  { $match: { productCount: { $gte: 2 } } },
+  { $sort: { avgRating: -1 } }
+])
+Explanation: Identifies top-rated electronics brands offering at least 2 products, 
+displaying their catalogue breadth and price range.
+
+Report 3: Low-Stock Inventory Alert Pipeline
+--------------------------------------------
+db.products.aggregate([
+  { $match: { stock: { $lte: 10 } } },
+  {
+    $project: {
+      title: 1,
+      sku: 1,
+      brand: 1,
+      stock: 1,
+      urgency: {
+        $cond: { if: { $eq: ["$stock", 0] }, then: "OUT_OF_STOCK", else: "LOW_STOCK" }
+      }
+    }
+  },
+  { $sort: { stock: 1 } }
+])
+Explanation: Extracts all items with 10 or fewer units in stock, tagging them with an 
+urgency flag for warehouse restocking.
+
+
+10. PYTHON AND PYMONGO INTEGRATION
+--------------------------------------------------------------------------------
+Below is the core Python script demonstrating PyMongo connection, indexing, CRUD 
+operations, and aggregation reporting for Ecom-Shop:
+
+```python
+import os
+from pymongo import MongoClient, ASCENDING, DESCENDING
+from datetime import datetime
+
+# 1. Establish MongoDB Connection via PyMongo
+MONGO_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017/")
+client = MongoClient(MONGO_URI)
+db = client["ecom_shop_db"]
+products = db["products"]
+
+# 2. Ensure Indexes for Fast Searching
+products.create_index([("slug", ASCENDING)], unique=True)
+products.create_index([("sku", ASCENDING)], unique=True)
+products.create_index([("category", ASCENDING), ("price", ASCENDING)])
+products.create_index([("title", "text"), ("brand", "text")])
+
+# 3. Create (Insert) Operation
+new_product = {
+    "title": "Apple iPhone 15 Pro Max",
+    "slug": "apple-iphone-15-pro-max",
+    "sku": "APL-IP15PM-256",
+    "brand": "Apple",
+    "category": "Smartphones",
+    "subCategory": "Flagship Phones",
+    "price": 149900,
+    "costPrice": 125000,
+    "stock": 25,
+    "status": "published",
+    "rating": 4.9,
+    "created_at": datetime.utcnow()
+}
+result = products.insert_one(new_product)
+print(f"Product inserted with ObjectId: {result.inserted_id}")
+
+# 4. Read (Query) Operation
+print("\n--- Flagship Smartphones ---")
+for item in products.find({"category": "Smartphones", "price": {"$gte": 100000}}):
+    print(f"- {item['title']} (₹{item['price']:,}) | Stock: {item['stock']}")
+
+# 5. Update Operation (Bulk Price Adjustment)
+update_res = products.update_many(
+    {"category": "Smartphones", "brand": "Samsung"},
+    {"$set": {"updated_at": datetime.utcnow()}, "$inc": {"stock": 5}}
+)
+print(f"\nUpdated {update_res.modified_count} Samsung items.")
+
+# 6. Aggregation Execution via PyMongo
+pipeline = [
+    {"$match": {"status": "published"}},
+    {"$group": {
+        "_id": "$category",
+        "itemCount": {"$sum": 1},
+        "totalStock": {"$sum": "$stock"},
+        "avgPrice": {"$avg": "$price"}
+    }},
+    {"$sort": {"totalStock": -1}}
+]
+print("\n--- Category-Wise Inventory Aggregation ---")
+for row in products.aggregate(pipeline):
+    print(f"Category: {row['_id']} | Items: {row['itemCount']} | Total Stock: {row['totalStock']} | Avg Price: ₹{round(row['avgPrice'], 2):,}")
+```
+
+
+11. ROLE OF INTERFACE AND PANDAS DATA HANDLING
+--------------------------------------------------------------------------------
+Interactive Web Interface:
+The application interface allows users to browse live mobile and electronics listings, 
+filter products by parent categories or subcategories, inspect detailed hardware 
+specifications, and view real-time pricing in Indian Rupees (₹). The administrative 
+section empowers store operators to perform quick inline stock updates, trigger category-wide 
+price rules, and monitor store metrics.
+
+Pandas Data Handling:
+Pandas enhances the Python workflow by transforming raw PyMongo cursor query results 
+directly into structured DataFrames:
+```python
+import pandas as pd
+
+# Fetch documents from MongoDB into a Pandas DataFrame
+cursor = products.find({}, {"_id": 0, "title": 1, "brand": 1, "category": 1, "price": 1, "stock": 1})
+df = pd.DataFrame(list(cursor))
+
+# Add calculated business column
+df["TotalValue"] = df["price"] * df["stock"]
+
+# Summary statistics
+summary = df.groupby("category")[["stock", "TotalValue"]].sum().reset_index()
+print(summary)
+```
+This enables rapid generation of CSV/Excel inventory reports and quick statistical 
+summaries for inventory audits.
+
+
+12. TESTING AND OUTPUT VERIFICATION
+--------------------------------------------------------------------------------
+Test Case | Operation Under Test | Input / Action                     | Expected Result                               | Status
+----------|----------------------|------------------------------------|-----------------------------------------------|--------
+TC-01     | Database Connection  | MongoClient(URI)                   | Successful handshake with MongoDB instance     | PASSED
+TC-02     | Insert Product       | Valid smartphone document payload  | Document saved with new BSON ObjectId         | PASSED
+TC-03     | Validation (Price)   | Insert document with price = -500  | Validation rejects insert; error returned     | PASSED
+TC-04     | Validation (SKU)     | Duplicate SKU insertion            | DuplicateKeyError raised on unique index       | PASSED
+TC-05     | Filter by Category   | Query category: 'Smartphones'      | Returns only matching smartphone documents    | PASSED
+TC-06     | Inline Stock Update  | Update stock from 45 to 40         | Document updated; modified_count = 1          | PASSED
+TC-07     | Category Aggregation | Run stock valuation pipeline        | Aggregated categories with correct sum & avg   | PASSED
+TC-08     | Low Stock Alert      | Query products where stock <= 10    | Accurately identifies items needing restock   | PASSED
+
+
+13. LIMITATIONS AND FUTURE ENHANCEMENTS
+--------------------------------------------------------------------------------
+Limitations:
+• Advanced faceted search across deeply nested JSON specifications can become slow 
+  without compound multi-key text indexes.
+• Transactional multi-document consistency requires an active MongoDB Replica Set.
+
+Future Enhancements:
+• MongoDB Change Streams: Implement real-time inventory notifications via WebSocket 
+  whenever a stock level changes.
+• Vector Search: Implement MongoDB Atlas Vector Search for AI-driven semantic 
+  recommendations (e.g., "phones good for night photography").
+• Redis Caching: Introduce an in-memory Redis cache layer in front of PyMongo for 
+  ultra-high-frequency read requests during flash sale events.
+
+
+14. CONCLUSION
+--------------------------------------------------------------------------------
+The Ecom-Shop project illustrates an enterprise-ready implementation of MongoDB 
+as a flexible, schema-adaptive NoSQL document store paired with Python and PyMongo. 
+By dispensing with the rigid schema constraints of traditional SQL relational 
+databases, the application effortlessly models diverse electronic product specifications, 
+handles multi-tier hierarchical categories, enforces database-level integrity, and 
+executes high-efficiency aggregation analytics for real-time inventory and pricing 
+intelligence. The project satisfies all academic parameters of the CSE 494 course, 
+demonstrating document modeling, PyMongo driver operations, data validation, and 
+practical deployment.
+
+
+15. PROJECT LINKS
+--------------------------------------------------------------------------------
+• GitHub Repository : https://github.com/shubhamp476/ecom-shop.git
+• Live Deployed URL : https://ecommobileshop.vercel.app/
+================================================================================
