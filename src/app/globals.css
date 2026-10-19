@@ -1,0 +1,130 @@
+@import "tailwindcss";
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *, .dark, .dark *));
+@import "./webflow.css";
+
+/* Lenis smooth scroll support */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* Nav letter roll-over hover */
+.header-menu-link {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex !important;
+}
+
+.header-menu-link .header-menu {
+  display: inline-flex;
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.header-menu-link .header-menu-hover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: inline-flex;
+  transform: translateY(105%);
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.header-menu-link:hover .header-menu {
+  transform: translateY(-105%);
+}
+
+.header-menu-link:hover .header-menu-hover {
+  transform: translateY(0%);
+}
+
+/* Slider dots styling */
+.w-slider-dot {
+  width: 12px;
+  height: 6px;
+  background: #9ca3af;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.w-slider-dot.w-active {
+  background: var(--accent-color-3, #2563eb);
+  width: 24px;
+}
+
+/* Brand logo infinite marquee */
+@keyframes marquee-scroll {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee-scroll-reverse {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 28s linear infinite;
+}
+
+.animate-marquee-reverse {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll-reverse 28s linear infinite;
+}
+
+.animate-marquee:hover, .animate-marquee-reverse:hover {
+  animation-play-state: paused;
+}
+
+/* Ensure Webflow marquee inner tracks animate smoothly */
+.marquee-track, .marquee-inner, .marquee-inner-two {
+  animation: marquee-scroll 24s linear infinite;
+  display: flex;
+  width: max-content;
+}
+
+/* Subtle pulse for video play button */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.6);
+  }
+  70% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 20px rgba(37, 99, 235, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
+  }
+}
+
+.pulse-btn {
+  animation: pulse-ring 2.4s infinite cubic-bezier(0.4, 0, 0.6, 1);
+}
