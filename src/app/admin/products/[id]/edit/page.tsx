@@ -1,6 +1,8 @@
+export const dynamic = "force-dynamic";
 import React, { Suspense } from "react";
 import ProductForm from "@/components/admin/ProductForm";
-import { adminStore } from "@/lib/admin-store";
+import { backendJson } from "@/lib/backend";
+import type { IProduct } from "@/models/Product";
 import { notFound } from "next/navigation";
 import { RefreshCw } from "lucide-react";
 
@@ -10,29 +12,8 @@ interface PageProps {
 
 async function EditProductContent({ params }: PageProps) {
   const { id } = await params;
-  let product: any = null;
-
-  try {
-    const { connectToDatabase } = await import("@/lib/mongodb");
-    const { Product } = await import("@/models/Product");
-    const conn = await connectToDatabase();
-    if (conn) {
-      const dbProduct = await Product.findOne({
-        $or: [{ _id: id }, { id: id }, { slug: id }, { sku: id }],
-      }).lean();
-      if (dbProduct) {
-        product = JSON.parse(JSON.stringify(dbProduct));
-      }
-    }
-  } catch (e) {
-    // Fall back to in-memory store
-  }
-
-  if (!product) {
-    product = adminStore.products.find(
-      (p) => p.id === id || p._id === id || p.slug === id || p.sku === id
-    );
-  }
+  const result = await backendJson<{ product: IProduct }>(`/api/admin/products/${encodeURIComponent(id)}`);
+  const product = result?.product;
 
   if (!product) {
     notFound();

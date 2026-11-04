@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: ecom-shop-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python -m backend.manage indexes && uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health/ready
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: APP_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: BACKEND_API_KEY
+        generateValue: true

@@ -49,3 +49,14 @@ next-env.d.ts
 !package-lock.json
 !tsconfig.json
 scratch_capture_all.js
+
+# Python backend and local deployment credentials
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+.netlify/
+!.env.example
+
+# Shareable generated source package
+/ECOM-SHOP-Updated.zip

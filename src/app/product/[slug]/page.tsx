@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { PRODUCTS } from "@/data/products";
 import { getProductBySlug } from "@/lib/data-service";
 import ProductClient from "./ProductClient";

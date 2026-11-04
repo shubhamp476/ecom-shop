@@ -1,9 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  cacheComponents: true,
-  partialPrefetching: true,
+  // Runtime credentials belong in the host environment, never in function bundles.
+  outputFileTracingExcludes: { "/*": ["./.env", "./.env.*"] },
   turbopack: {
     rules: {
       "*.css": {

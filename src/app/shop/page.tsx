@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import React from "react";
 import { getAllProducts } from "@/lib/data-service";
 import ShopClient from "./ShopClient";

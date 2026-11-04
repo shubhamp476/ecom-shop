@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { CATEGORIES } from "@/data/products";
 import { getCategoryBySlug, getProductsByCategory } from "@/lib/data-service";
 import CategoryClient from "./CategoryClient";

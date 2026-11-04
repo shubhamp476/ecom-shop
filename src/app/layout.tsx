@@ -3,7 +3,7 @@ import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
 
 export const metadata: Metadata = {
-  title: "Givolt - Webflow HTML Website Template",
+  title: "ECOM-SHOP | Electronics Store",
   description:
     "Discover thoughtfully designed gadgets that blend innovation, performance, and style — built to elevate how you live, work, and play.",
   icons: {
@@ -28,6 +28,7 @@ export default function RootLayout({
         />
       </head>
       <body>
+        {process.env.DEMO_MODE === "true" && <div style={{ background: "#172554", color: "white", padding: "10px", textAlign: "center", fontSize: "14px" }}>Storefront preview — sample catalog. Live database and administration are not connected.</div>}
         <SmoothScroll />
         {children}
       </body>

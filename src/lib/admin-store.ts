@@ -1,16 +1,14 @@
-// In-memory persistent state store for instant preview & fallback when MongoDB is unconfigured or in setup state.
-// Also synchronizes with MongoDB collections whenever connection is active!
-
-import { IProduct } from "@/models/Product";
-import { ICategory } from "@/models/Category";
-import { IBrand } from "@/models/Brand";
-import { IOrder } from "@/models/Order";
-import { ICustomer } from "@/models/Customer";
-import { ICoupon } from "@/models/Coupon";
-import { ISupplier } from "@/models/Supplier";
-import { IInventoryLog } from "@/models/InventoryLog";
-import { IActivityLog } from "@/models/ActivityLog";
-import { IStoreSettings } from "@/models/StoreSettings";
+// Legacy sample data retained for reference; never used for database writes.
+import type { IProduct } from "@/models/Product";
+import type { ICategory } from "@/models/Category";
+import type { IBrand } from "@/models/Brand";
+import type { IOrder } from "@/models/Order";
+import type { ICustomer } from "@/models/Customer";
+import type { ICoupon } from "@/models/Coupon";
+import type { ISupplier } from "@/models/Supplier";
+import type { IInventoryLog } from "@/models/InventoryLog";
+import type { IActivityLog } from "@/models/ActivityLog";
+import type { IStoreSettings } from "@/models/StoreSettings";
 import { PRODUCTS, CATEGORIES } from "@/data/products";
 
 export interface AdminStoreState {

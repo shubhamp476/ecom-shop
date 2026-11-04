@@ -10,50 +10,14 @@ interface FeaturedProps {
 export default function FeaturedProducts({ onAddToCart }: FeaturedProps) {
   const [currentPage, setCurrentPage] = useState(0);
 
-  const [products, setProducts] = useState([
-    {
-      title: "Bluetooth Speaker",
-      price: "₹6,999",
-      image: "/assets/69d4a88b6ec9fb5582a36aeb_1.avif",
-      href: "/product/bluetooth-speaker",
-    },
-    {
-      title: "Phone 15 Plus",
-      price: "₹79,900",
-      image: "/assets/69df4a954555589136c71ab7_Mask-group-_6_.avif",
-      href: "/product/phone-15-plus",
-    },
-    {
-      title: "Laptop with Retina",
-      price: "₹1,49,990",
-      image: "/assets/69d4a766514e45f3c66b8c46_3.avif",
-      href: "/product/laptop-with-retina",
-    },
-    {
-      title: "Smart Video Doorbell",
-      price: "₹8,499",
-      image: "/assets/69df49d42aaee89a45f6f63f_Mask-group-_1_.avif",
-      href: "/product/smart-video-doorbell",
-    },
-    {
-      title: "Over-Ear Headphones",
-      price: "₹14,999",
-      image: "/assets/69d4a8eeff34e3f332faf8cc_3.avif",
-      href: "/product/over-ear-headphones",
-    },
-    {
-      title: "Laptop Cooling Pad",
-      price: "₹2,499",
-      image: "/assets/69d4a98a3e5dfb5e699e47b4_3.avif",
-      href: "/product/laptop-cooling-pad",
-    },
-  ]);
+  const [products, setProducts] = useState<{ title: string; price: string; image: string; href: string }[]>([]);
+  const [loadError, setLoadError] = useState(false);
 
   useEffect(() => {
     fetch("/api/products")
       .then((res) => res.json())
       .then((json) => {
-        if (json.success && json.data && json.data.length > 0) {
+        if (json.success && Array.isArray(json.data)) {
           const dynamic = json.data.slice(0, 6).map((p: any) => ({
             title: p.name,
             price: `₹${p.price.toLocaleString("en-IN")}`,
@@ -61,12 +25,12 @@ export default function FeaturedProducts({ onAddToCart }: FeaturedProps) {
             href: `/product/${p.slug}`,
           }));
           setProducts(dynamic);
-        }
+        } else { setLoadError(true); }
       })
-      .catch(() => {});
+      .catch(() => setLoadError(true));
   }, []);
 
-  const totalPages = Math.ceil(products.length / 3);
+  const totalPages = Math.max(1, Math.ceil(products.length / 3));
 
   const handleNext = () => {
     setCurrentPage((prev) => (prev + 1) % totalPages);
@@ -78,6 +42,7 @@ export default function FeaturedProducts({ onAddToCart }: FeaturedProps) {
 
   return (
     <section className="product-section">
+      {loadError && <p role="status" style={{ textAlign: "center" }}>Products are temporarily unavailable.</p>}
       <div className="w-layout-blockcontainer container w-container">
         {/* Section Header */}
         <div className="section-title-box center">

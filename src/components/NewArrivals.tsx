@@ -8,62 +8,14 @@ interface NewArrivalsProps {
 }
 
 export default function NewArrivals({ onAddToCart }: NewArrivalsProps) {
-  const [products, setProducts] = useState([
-    {
-      title: "2-in-1 Convertible Laptop",
-      price: "₹54,999",
-      image: "/assets/69d0c87ed8ef3466bd9164f9_2.avif",
-      href: "/product/2-in-1-convertible-laptop",
-    },
-    {
-      title: "Laptop with Retina",
-      price: "₹1,49,990",
-      image: "/assets/69d4a766514e45f3c66b8c46_3.avif",
-      href: "/product/laptop-with-retina",
-    },
-    {
-      title: "Multimedia HP Laptop",
-      price: "₹69,999",
-      image: "/assets/69d4a78323f32ba59dd0c802_4.avif",
-      href: "/product/multimedia-hp-laptop",
-    },
-    {
-      title: "Wi-Fi LED Bulb",
-      price: "₹1,499",
-      image: "/assets/69df4a38baf3794c305674ee_Mask-group-_3_.avif",
-      href: "/product/wi-fi-led-bulb",
-    },
-    {
-      title: "Thermostat Controller",
-      price: "₹7,499",
-      image: "/assets/69df4a170c17b8c004971588_Mask-group-_2_.avif",
-      href: "/product/thermostat-controller",
-    },
-    {
-      title: "Smart Video Doorbell",
-      price: "₹8,499",
-      image: "/assets/69df49d42aaee89a45f6f63f_Mask-group-_1_.avif",
-      href: "/product/smart-video-doorbell",
-    },
-    {
-      title: "Smart Door Lock",
-      price: "₹11,999",
-      image: "/assets/69df49f8b6db64a130852714_Mask-group.avif",
-      href: "/product/smart-door-lock",
-    },
-    {
-      title: "Bluetooth Speaker",
-      price: "₹6,999",
-      image: "/assets/69d4a88b6ec9fb5582a36aeb_1.avif",
-      href: "/product/bluetooth-speaker",
-    },
-  ]);
+  const [products, setProducts] = useState<{ title: string; price: string; image: string; href: string }[]>([]);
+  const [loadError, setLoadError] = useState(false);
 
   useEffect(() => {
     fetch("/api/products")
       .then((res) => res.json())
       .then((json) => {
-        if (json.success && json.data && json.data.length > 0) {
+        if (json.success && Array.isArray(json.data)) {
           const dynamic = json.data.slice(0, 8).map((p: any) => ({
             title: p.name,
             price: `₹${p.price.toLocaleString("en-IN")}`,
@@ -71,13 +23,14 @@ export default function NewArrivals({ onAddToCart }: NewArrivalsProps) {
             href: `/product/${p.slug}`,
           }));
           setProducts(dynamic);
-        }
+        } else { setLoadError(true); }
       })
-      .catch(() => {});
+      .catch(() => setLoadError(true));
   }, []);
 
   return (
     <section className="product-section pb-zero">
+      {loadError && <p role="status" style={{ textAlign: "center" }}>Products are temporarily unavailable.</p>}
       <div className="w-layout-blockcontainer container w-container">
         {/* Section Header */}
         <div className="sectitle-wrapper">

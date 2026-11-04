@@ -50,8 +50,8 @@ interface StatsData {
     totalOrders: number;
     pendingOrders: number;
     totalRevenue: number;
-    grossProfit: number;
-    profitMargin: number;
+    grossProfit: number | null;
+    profitMargin: number | null;
     totalCustomers: number;
   };
   charts: {
@@ -119,6 +119,8 @@ export default function AdminDashboardPage() {
     }
   };
 
+  const [loadError, setLoadError] = useState("");
+
   const fetchStats = async () => {
     try {
       setLoading(true);
@@ -126,9 +128,9 @@ export default function AdminDashboardPage() {
       const json = await res.json();
       if (json.success) {
         setData(json);
-      }
+      } else { setLoadError(json.error || "Unable to load dashboard"); }
     } catch (err) {
-      console.error("Failed to load admin stats", err);
+      setLoadError("Unable to reach the backend. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -137,6 +139,8 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     fetchStats();
   }, []);
+
+  if (loadError) return <p role="alert" className="p-6 text-red-500">{loadError}</p>;
 
   if (loading || !data) {
     return (
@@ -225,7 +229,7 @@ export default function AdminDashboardPage() {
             </span>
             <div className="flex items-center gap-1.5 mt-2 text-xs text-emerald-600 dark:text-emerald-400 font-medium">
               <TrendingUp className="w-3.5 h-3.5" />
-              <span>+18.4% vs last month</span>
+              <span>Paid orders in the database</span>
             </div>
           </div>
         </div>
@@ -274,9 +278,9 @@ export default function AdminDashboardPage() {
             </div>
           </div>
           <div className="mt-4">
-            <span className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">{kpis.profitMargin}%</span>
+            <span className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">{kpis.profitMargin === null ? "Unavailable" : `${kpis.profitMargin}%`}</span>
             <div className="flex items-center gap-1.5 mt-2 text-xs text-purple-600 dark:text-purple-400 font-medium">
-              <span>Est. Gross Profit: ₹{kpis.grossProfit.toLocaleString("en-IN")}</span>
+              <span>{kpis.grossProfit === null ? "Order cost data required" : `Gross Profit: ₹${kpis.grossProfit.toLocaleString("en-IN")}`}</span>
             </div>
           </div>
         </div>

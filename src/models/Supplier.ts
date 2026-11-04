@@ -1,5 +1,4 @@
-import mongoose, { Schema, Model, models } from "mongoose";
-
+// API response types. MongoDB persistence is implemented in backend/.
 export interface ISupplier {
   _id?: string;
   name: string;
@@ -17,26 +16,3 @@ export interface ISupplier {
   createdAt?: Date;
   updatedAt?: Date;
 }
-
-const SupplierSchema = new Schema<ISupplier>(
-  {
-    name: { type: String, required: true },
-    companyName: { type: String, required: true },
-    email: { type: String, required: true },
-    phone: { type: String, required: true },
-    gstin: String,
-    address: { type: String, default: "" },
-    city: String,
-    state: String,
-    brandsSupplied: [{ type: String }],
-    paymentTerms: { type: String, default: "Net 30" },
-    status: { type: String, enum: ["Active", "Inactive"], default: "Active" },
-    rating: { type: Number, default: 5 },
-  },
-  {
-    timestamps: true,
-  }
-);
-
-export const Supplier: Model<ISupplier> =
-  models.Supplier || mongoose.model<ISupplier>("Supplier", SupplierSchema);
