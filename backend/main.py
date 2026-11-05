@@ -232,6 +232,94 @@ def orders(db: DB, search: str = '', status: str = ''):
     if status: clauses.append({'$or': [{'fulfillmentStatus': status}, {'paymentStatus': status}]})
     return result(orders=list(db.orders.find({'$and': clauses} if clauses else {}).sort('createdAt', -1)))
 
+@app.post('/api/admin/orders', status_code=201)
+@app.post('/api/orders', status_code=201)
+def create_order(body: dict, db: DB):
+    order_num = body.get('orderNumber')
+    if not order_num:
+        settings_doc = db.storesettings.find_one({}) or {}
+        prefix = settings_doc.get('orderPrefix', 'GV-')
+        order_num = f"{prefix}{secrets.randbelow(900000) + 100000}"
+
+    order_doc = {
+        'orderNumber': order_num,
+        'customer': body.get('customer') or {},
+        'items': body.get('items') or [],
+        'subtotal': float(body.get('subtotal', 0)),
+        'tax': float(body.get('tax', 0)),
+        'discount': float(body.get('discount', 0)),
+        'shipping': float(body.get('shipping', 0)),
+        'total': float(body.get('total', 0)),
+        'paymentMethod': body.get('paymentMethod', 'Cash on Delivery'),
+        'paymentStatus': body.get('paymentStatus', 'Pending'),
+        'fulfillmentStatus': body.get('fulfillmentStatus', 'Confirmed'),
+        'trackingNumber': body.get('trackingNumber', ''),
+        'shippingCarrier': body.get('shippingCarrier', 'Delhivery'),
+        'customerNotes': body.get('customerNotes', ''),
+        'adminNotes': body.get('adminNotes', ''),
+        'razorpayOrderId': body.get('razorpayOrderId'),
+        'razorpayPaymentId': body.get('razorpayPaymentId'),
+        'createdAt': now(),
+        'updatedAt': now(),
+    }
+
+    # Deduct stock and record inventory logs for each item
+    for item in order_doc['items']:
+        qty = int(item.get('quantity', 1))
+        lookup_key = item.get('productId') or item.get('id') or item.get('slug') or item.get('sku')
+        if lookup_key:
+            prod = db.products.find_one(identity(str(lookup_key)))
+            if prod:
+                prev_stock = prod.get('stock', 0)
+                new_stock = max(0, prev_stock - qty)
+                new_status = 'Out of Stock' if new_stock == 0 else prod.get('status', 'Active')
+                db.products.update_one(
+                    {'_id': prod['_id']},
+                    {'$set': {'stock': new_stock, 'inStock': new_stock > 0, 'status': new_status, 'updatedAt': now()}}
+                )
+                db.inventorylogs.insert_one({
+                    'productId': str(prod['_id']),
+                    'productName': prod.get('name', item.get('name', '')),
+                    'sku': prod.get('sku', item.get('sku', '')),
+                    'type': 'order',
+                    'quantityChange': -qty,
+                    'previousStock': prev_stock,
+                    'newStock': new_stock,
+                    'reason': f"Order #{order_num}",
+                    'actor': 'Checkout',
+                    'timestamp': now()
+                })
+
+    # Update or upsert customer
+    cust = order_doc.get('customer') or {}
+    cust_email = cust.get('email')
+    if cust_email:
+        db.customers.update_one(
+            {'email': cust_email},
+            {
+                '$setOnInsert': {
+                    'name': cust.get('name', ''),
+                    'phone': cust.get('phone', ''),
+                    'shippingAddress': cust.get('shippingAddress', {}),
+                    'tier': 'Bronze',
+                    'notes': '',
+                    'status': 'Active',
+                    'createdAt': now(),
+                },
+                '$inc': {'totalOrders': 1, 'totalSpend': order_doc['total']},
+                '$set': {'lastOrderDate': now(), 'updatedAt': now()}
+            },
+            upsert=True
+        )
+
+    coupon_code = body.get('couponCode')
+    if coupon_code:
+        db.coupons.update_one({'code': str(coupon_code).upper()}, {'$inc': {'usedCount': 1}})
+
+    db.orders.insert_one(order_doc)
+    audit(db, 'ORDER_CREATED', 'Order', order_num, f"Order created via {order_doc['paymentMethod']}")
+    return result(order=order_doc, message='Order placed successfully')
+
 @app.patch('/api/admin/orders')
 def update_order(body: OrderPatch, db: DB):
     data = body.model_dump(exclude_none=True, exclude={'orderNumber'})

@@ -3,7 +3,8 @@
 import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { PRODUCTS, CATEGORIES, Category } from "@/data/products";
+import { PRODUCTS, CATEGORIES, Category, Product } from "@/data/products";
+import { useCart } from "@/context/CartContext";
 
 interface CategoryClientProps {
   category: Category;
@@ -12,13 +13,12 @@ interface CategoryClientProps {
 
 export default function CategoryClient({ category, products }: CategoryClientProps) {
   const categoryProducts = products || PRODUCTS.filter((p) => p.categorySlug === category.slug);
-
-  const [cartCount, setCartCount] = useState<number>(0);
+  const cart = useCart();
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  const handleAddToCart = (productName: string) => {
-    setCartCount((prev) => prev + 1);
-    setToastMessage(`Added "${productName}" to cart!`);
+  const handleAddToCart = (product: Product) => {
+    cart.addToCart(product, 1);
+    setToastMessage(`Added "${product.name}" to cart!`);
     setTimeout(() => {
       setToastMessage(null);
     }, 2800);
@@ -35,7 +35,7 @@ export default function CategoryClient({ category, products }: CategoryClientPro
       )}
 
       {/* Main Header / Navbar */}
-      <Navbar cartCount={cartCount} />
+      <Navbar />
 
       {/* Page Title Section */}
       <section className="page-section">
@@ -106,7 +106,7 @@ export default function CategoryClient({ category, products }: CategoryClientPro
                             <div>
                               <button
                                 type="button"
-                                onClick={() => handleAddToCart(product.name)}
+                                onClick={() => handleAddToCart(product)}
                                 className="product-btn-two cursor-pointer border-none"
                               >
                                 Add to Cart

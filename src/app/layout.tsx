@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
+import { CartProvider } from "@/context/CartContext";
 
 export const metadata: Metadata = {
   title: "ECOM-SHOP | Electronics Store",
@@ -30,7 +31,7 @@ export default function RootLayout({
       <body>
         {process.env.DEMO_MODE === "true" && <div style={{ background: "#172554", color: "white", padding: "10px", textAlign: "center", fontSize: "14px" }}>Storefront preview — sample catalog. Live database and administration are not connected.</div>}
         <SmoothScroll />
-        {children}
+        <CartProvider>{children}</CartProvider>
       </body>
     </html>
   );

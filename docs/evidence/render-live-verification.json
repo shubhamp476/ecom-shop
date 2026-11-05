@@ -1,0 +1,49 @@
+[
+  {
+    "path": "/",
+    "authenticated": false,
+    "status": 200,
+    "bytes": 75360
+  },
+  {
+    "path": "/shop",
+    "authenticated": false,
+    "status": 200,
+    "bytes": 72227,
+    "catalog_rendered": true
+  },
+  {
+    "path": "/product/streaming-microphone",
+    "authenticated": false,
+    "status": 200,
+    "bytes": 33270
+  },
+  {
+    "path": "/admin",
+    "authenticated": false,
+    "status": 401,
+    "bytes": 30
+  },
+  {
+    "path": "/api/admin/products",
+    "authenticated": false,
+    "status": 401,
+    "bytes": 30
+  },
+  {
+    "path": "/admin",
+    "authenticated": true,
+    "status": 200,
+    "bytes": 39806
+  },
+  {
+    "path": "/api/admin/products",
+    "authenticated": true,
+    "error": "curl: (60) SSL certificate problem: self signed certificate in certificate chain\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+  },
+  {
+    "path": "/api/admin/stats",
+    "authenticated": true,
+    "error": "curl: (60) SSL certificate problem: self signed certificate in certificate chain\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+  }
+]

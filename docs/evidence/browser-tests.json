@@ -1,0 +1,15 @@
+{
+  "database": "isolated mongomock fixture; not Atlas",
+  "checks": [
+    "Next.js -> FastAPI catalog response",
+    "Product creation through Next.js proxy",
+    "Browser rendered /shop",
+    "Browser rendered /product/browser-integration-phone",
+    "Browser rendered /admin/products",
+    "Browser rendered /admin/reports",
+    "Server-rendered product edit reads FastAPI",
+    "Zero-stock update is preserved",
+    "Delete and subsequent 404 through proxy"
+  ],
+  "consoleErrors": []
+}

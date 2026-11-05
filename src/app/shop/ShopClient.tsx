@@ -4,18 +4,19 @@ import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Product } from "@/data/products";
+import { useCart } from "@/context/CartContext";
 
 interface ShopClientProps {
   products: Product[];
 }
 
 export default function ShopClient({ products }: ShopClientProps) {
-  const [cartCount, setCartCount] = useState<number>(0);
+  const cart = useCart();
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  const handleAddToCart = (productName: string) => {
-    setCartCount((prev) => prev + 1);
-    setToastMessage(`Added "${productName}" to cart!`);
+  const handleAddToCart = (product: Product) => {
+    cart.addToCart(product, 1);
+    setToastMessage(`Added "${product.name}" to cart!`);
     setTimeout(() => {
       setToastMessage(null);
     }, 2800);
@@ -32,7 +33,7 @@ export default function ShopClient({ products }: ShopClientProps) {
       )}
 
       {/* Main Header / Navbar */}
-      <Navbar cartCount={cartCount} />
+      <Navbar />
 
       {/* Title Section */}
       <section className="page-section">
@@ -76,7 +77,7 @@ export default function ShopClient({ products }: ShopClientProps) {
                         <div>
                           <button
                             type="button"
-                            onClick={() => handleAddToCart(product.name)}
+                            onClick={() => handleAddToCart(product)}
                             className="product-btn-two cursor-pointer border-none"
                           >
                             Add to Cart

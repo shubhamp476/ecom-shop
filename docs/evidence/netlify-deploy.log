@@ -1,0 +1,56 @@
+(node:93905) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+--import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("/private/tmp/rea-fetch-loader.mjs", pathToFileURL("./"));'
+(Use `node --trace-warnings ...` to show where the warning was created)
+⠋ Bundling edge functions...
+
+✔ Finished bundling edge functions
+
+Deploying to Netlify
+────────────────────────────────────────────────────────────────
+
+[32mDeploy path: [39m       /private/tmp/ecom-shop-netlify-5tuoxbn8/.next
+[32mConfiguration path: [39m/private/tmp/ecom-shop-netlify-5tuoxbn8/netlify.toml
+
+⠋ Uploading blobs to deploy store...
+
+Error uploading blobs to deploy store: Verified HTTPS transport failed at https://api.netlify.com (curl 60)
+​
+Internal error during "Uploading blobs"                       
+────────────────────────────────────────────────────────────────
+​
+  Error message
+  Error: Failed while uploading blobs to deploy store: Verified HTTPS transport failed at https://api.netlify.com (curl 60)
+​
+  Error location
+  During Uploading blobs
+      at coreStep (file:///Users/shubham/.npm/_npx/da5c1b6ea715e8b4/node_modules/@netlify/build/lib/plugins_core/blobs_upload/index.js:70:15)
+      at async fireCoreStep (file:///Users/shubham/.npm/_npx/da5c1b6ea715e8b4/node_modules/@netlify/build/lib/steps/core_step.js:11:121)
+      at async tFireStep (file:///Users/shubham/.npm/_npx/da5c1b6ea715e8b4/node_modules/@netlify/build/lib/time/main.js:19:63)
+      at async file:///Users/shubham/.npm/_npx/da5c1b6ea715e8b4/node_modules/@netlify/build/lib/steps/run_step.js:65:329
+      at async runSteps (file:///Users/shubham/.npm/_npx/da5c1b6ea715e8b4/node_modules/@netlify/build/lib/steps/run_steps.js:21:408)
+      at async runBuildStep (file:///Users/shubham/.npm/_npx/da5c1b6ea715e8b4/node_modules/@netlify/build/lib/steps/run_core_steps.js:112:80)
+      at async executeBuildStep (file:///Users/shubham/.npm/_npx/da5c1b6ea715e8b4/node_modules/@netlify/build/lib/steps/run_core_steps.js:73:68)
+      at async runCoreSteps (file:///Users/shubham/.npm/_npx/da5c1b6ea715e8b4/node_modules/@netlify/build/lib/steps/run_core_steps.js:19:68)
+      at async uploadDeployBlobs (file:///Users/shubham/.npm/_npx/da5c1b6ea715e8b4/node_modules/netlify-cli/dist/commands/deploy/deploy.js:358:25)
+      at async runDeploy (file:///Users/shubham/.npm/_npx/da5c1b6ea715e8b4/node_modules/netlify-cli/dist/commands/deploy/deploy.js:443:9)
+​
+  Resolved config
+  build:
+    command: npm run build
+    commandOrigin: config
+    environment:
+      - NODE_VERSION
+      - PYTHON_VERSION
+      - NETLIFY_SKIP_PYTHON_INSTALL
+    publish: /private/tmp/ecom-shop-netlify-5tuoxbn8/.next
+    publishOrigin: config
+  plugins:
+    - inputs: {}
+      origin: config
+      package: "@netlify/plugin-nextjs"
+✖ Deploy aborted due to error while uploading blobs to deploy store
+ ›   Warning: Failed canceling deploy with id 6aeaee0fd6905bb89093f036: Verified HTTPS transport failed at https://api.netlify.com (curl 60)
+ ›   Warning: 
+{}
+
+ ›   Error: Error while uploading blobs to deploy store

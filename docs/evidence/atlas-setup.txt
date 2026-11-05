@@ -1,0 +1,1 @@
+{"categoriesSeeded": 5, "productsSeeded": 20}

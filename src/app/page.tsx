@@ -14,13 +14,14 @@ import Reviews from "@/components/Reviews";
 import InstagramGrid from "@/components/InstagramGrid";
 import BlogSection from "@/components/BlogSection";
 import Footer from "@/components/Footer";
+import { useCart } from "@/context/CartContext";
 
 export default function Home() {
-  const [cartCount, setCartCount] = useState(0);
+  const cart = useCart();
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const handleAddToCart = (productName: string) => {
-    setCartCount((prev) => prev + 1);
+    cart.addToCart({ name: productName }, 1);
     setToastMessage(`Added "${productName}" to cart!`);
     setTimeout(() => {
       setToastMessage(null);
@@ -38,7 +39,7 @@ export default function Home() {
       )}
 
       {/* 1. Header / Navbar */}
-      <Navbar cartCount={cartCount} />
+      <Navbar />
 
       <main>
         {/* 2. Hero Section */}

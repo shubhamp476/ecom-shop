@@ -1,0 +1,10 @@
+[
+  {
+    "path": "/api/admin/products",
+    "error": "curl: (60) SSL certificate problem: self signed certificate in certificate chain\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+  },
+  {
+    "path": "/api/admin/stats",
+    "error": "curl: (60) SSL certificate problem: self signed certificate in certificate chain\nMore details here: https://curl.se/docs/sslcerts.html\n\ncurl failed to verify the legitimacy of the server and therefore could not\nestablish a secure connection to it. To learn more about this situation and\nhow to fix it, please visit the web page mentioned above.\n"
+  }
+]

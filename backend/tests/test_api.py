@@ -151,6 +151,37 @@ def test_seed_is_non_destructive(setup):
     assert c.get('/api/seed').status_code==405
     assert c.post('/api/seed').status_code==403
 
+def test_order_creation_and_inventory(setup,product):
+    c,db=setup
+    c.post('/api/admin/categories', json={'name':'Phones','slug':'phones'})
+    p=c.post('/api/admin/products', json=product).json()['product']
+    order_payload = {
+        'orderNumber': 'GV-TEST-001',
+        'customer': {'name': 'Rohan Sharma', 'email': 'rohan@example.com', 'phone': '9876543210'},
+        'items': [{'productId': p['_id'], 'name': p['name'], 'price': p['price'], 'quantity': 2}],
+        'subtotal': p['price'] * 2,
+        'tax': 0,
+        'discount': 0,
+        'shipping': 0,
+        'total': p['price'] * 2,
+        'paymentMethod': 'Razorpay',
+        'paymentStatus': 'Paid',
+        'fulfillmentStatus': 'Confirmed',
+    }
+    r = c.post('/api/admin/orders', json=order_payload)
+    assert r.status_code == 201
+    assert r.json()['order']['orderNumber'] == 'GV-TEST-001'
+    # Verify stock deducted
+    from backend.db import identity
+    updated_prod = db.products.find_one(identity(p['_id']))
+    assert updated_prod['stock'] == 8 # was 10, 10 - 2 = 8
+    # Verify customer updated
+    cust = db.customers.find_one({'email': 'rohan@example.com'})
+    assert cust is not None and cust['totalOrders'] == 1
+    # Verify order in listing
+    orders_res = c.get('/api/admin/orders').json()
+    assert len(orders_res['orders']) == 1
+
 def test_missing_configuration(monkeypatch):
     monkeypatch.setenv('MONGODB_URI','')
     with TestClient(app) as c:

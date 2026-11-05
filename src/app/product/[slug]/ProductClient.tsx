@@ -1,17 +1,20 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { PRODUCTS, Product } from "@/data/products";
+import { useCart } from "@/context/CartContext";
 
 interface ProductClientProps {
   product: Product;
 }
 
 export default function ProductClient({ product }: ProductClientProps) {
+  const router = useRouter();
+  const cart = useCart();
   const [quantity, setQuantity] = useState<number>(1);
-  const [cartCount, setCartCount] = useState<number>(0);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Related products (4 products from other categories or same)
@@ -19,15 +22,22 @@ export default function ProductClient({ product }: ProductClientProps) {
 
   const handleAddToCart = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    setCartCount((prev) => prev + quantity);
+    cart.addToCart(product, quantity);
     setToastMessage(`Added ${quantity}x "${product.name}" to cart!`);
     setTimeout(() => {
       setToastMessage(null);
     }, 2800);
   };
 
+  const handleBuyNow = (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
+    cart.addToCart(product, quantity);
+    router.push("/checkout");
+  };
+
   const handleAddRelatedToCart = (pName: string) => {
-    setCartCount((prev) => prev + 1);
+    const rel = PRODUCTS.find((p) => p.name === pName);
+    cart.addToCart(rel || { name: pName, price: 1999 }, 1);
     setToastMessage(`Added "${pName}" to cart!`);
     setTimeout(() => {
       setToastMessage(null);
@@ -45,7 +55,7 @@ export default function ProductClient({ product }: ProductClientProps) {
       )}
 
       {/* Main Header / Navbar */}
-      <Navbar cartCount={cartCount} />
+      <Navbar />
 
       {/* Product Detail Section */}
       <section className="product-detail pb-zero">
@@ -96,6 +106,13 @@ export default function ProductClient({ product }: ProductClientProps) {
                         className="w-commerce-commerceaddtocartbutton cart-button cursor-pointer"
                         value="Add to Cart"
                       />
+                      <button
+                        type="button"
+                        onClick={handleBuyNow}
+                        className="px-6 py-3.5 bg-[#0c1013] text-white rounded-full font-semibold hover:bg-neutral-800 transition-colors shadow-md cursor-pointer text-sm whitespace-nowrap"
+                      >
+                        Buy Now
+                      </button>
                     </form>
                   </div>
                 </div>

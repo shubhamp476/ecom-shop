@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "scope": "One temporary collection; application documents were not modified",
+  "checks": [
+    "Atlas authenticated ping",
+    "Product insert, retrieval and BSON serialization",
+    "Unique SKU rejects duplicate",
+    "Update preserves zero stock",
+    "MongoDB aggregation",
+    "Delete and empty result",
+    "Temporary test collection removed"
+  ]
+}
