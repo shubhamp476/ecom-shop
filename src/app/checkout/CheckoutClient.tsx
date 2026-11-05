@@ -572,7 +572,8 @@ export default function CheckoutClient() {
           <div className="flex flex-col sm:flex-row gap-3">
             <Link
               href="/shop"
-              className="flex-1 py-3.5 bg-[#2563eb] text-white rounded-2xl font-semibold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-500/20 text-center text-sm"
+              style={{ color: "#ffffff", backgroundColor: "#2563eb" }}
+              className="flex-1 py-3.5 bg-[#2563eb] text-white rounded-2xl font-semibold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-500/20 text-center text-sm !text-white"
             >
               Continue Shopping
             </Link>
@@ -617,9 +618,10 @@ export default function CheckoutClient() {
           </p>
           <Link
             href="/shop"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-[#2563eb] text-white rounded-2xl font-semibold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-500/25"
+            style={{ color: "#ffffff", backgroundColor: "#2563eb" }}
+            className="inline-flex items-center gap-2 px-8 py-4 bg-[#2563eb] text-white rounded-2xl font-semibold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-500/25 !text-white"
           >
-            Explore Catalog <ChevronRight className="w-4 h-4" />
+            Explore Catalog <ChevronRight className="w-4 h-4 text-white" />
           </Link>
         </div>
       </div>
@@ -687,7 +689,6 @@ export default function CheckoutClient() {
                         name="name"
                         value={formData.name}
                         onChange={handleInputChange}
-                        placeholder="e.g. Rahul Sharma"
                         className={`w-full px-4 py-3 rounded-xl border text-sm transition-all focus:outline-none ${
                           errors.name ? "border-red-500 bg-red-50/30" : "border-gray-200 focus:border-blue-600"
                         }`}
@@ -705,7 +706,6 @@ export default function CheckoutClient() {
                           name="email"
                           value={formData.email}
                           onChange={handleInputChange}
-                          placeholder="rahul@example.com"
                           className={`w-full px-4 py-3 rounded-xl border text-sm transition-all focus:outline-none ${
                             errors.email ? "border-red-500 bg-red-50/30" : "border-gray-200 focus:border-blue-600"
                           }`}
@@ -724,7 +724,6 @@ export default function CheckoutClient() {
                             name="phone"
                             value={formData.phone}
                             onChange={handleInputChange}
-                            placeholder="9876543210"
                             maxLength={10}
                             className={`w-full pl-12 pr-4 py-3 rounded-xl border text-sm transition-all focus:outline-none ${
                               errors.phone ? "border-red-500 bg-red-50/30" : "border-gray-200 focus:border-blue-600"
@@ -756,7 +755,6 @@ export default function CheckoutClient() {
                         name="street"
                         value={formData.street}
                         onChange={handleInputChange}
-                        placeholder="Flat 402, Sunshine Apartments, MG Road"
                         className={`w-full px-4 py-3 rounded-xl border text-sm transition-all focus:outline-none ${
                           errors.street ? "border-red-500 bg-red-50/30" : "border-gray-200 focus:border-blue-600"
                         }`}
@@ -774,7 +772,6 @@ export default function CheckoutClient() {
                           name="city"
                           value={formData.city}
                           onChange={handleInputChange}
-                          placeholder="Mumbai"
                           className={`w-full px-4 py-3 rounded-xl border text-sm transition-all focus:outline-none ${
                             errors.city ? "border-red-500 bg-red-50/30" : "border-gray-200 focus:border-blue-600"
                           }`}
@@ -811,7 +808,6 @@ export default function CheckoutClient() {
                           name="postalCode"
                           value={formData.postalCode}
                           onChange={handleInputChange}
-                          placeholder="400001"
                           maxLength={6}
                           className={`w-full px-4 py-3 rounded-xl border text-sm transition-all focus:outline-none ${
                             errors.postalCode ? "border-red-500 bg-red-50/30" : "border-gray-200 focus:border-blue-600"
@@ -841,7 +837,6 @@ export default function CheckoutClient() {
                         name="notes"
                         value={formData.notes}
                         onChange={handleInputChange}
-                        placeholder="Near Metro Station or Leave at front door"
                         className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-blue-600"
                       />
                     </div>
@@ -998,14 +993,14 @@ export default function CheckoutClient() {
                               type="text"
                               value={couponCode}
                               onChange={(e) => setCouponCode(e.target.value)}
-                              placeholder="Coupon code (e.g. WELCOME10)"
                               className="w-full pl-9 pr-3 py-2 text-xs uppercase rounded-xl border border-gray-200 focus:outline-none focus:border-blue-600"
                             />
                           </div>
                           <button
                             type="button"
                             onClick={handleApplyCoupon}
-                            className="px-4 py-2 bg-neutral-900 text-white rounded-xl text-xs font-semibold hover:bg-neutral-800 transition-colors cursor-pointer"
+                            style={{ color: "#ffffff", backgroundColor: "#0c1013" }}
+                            className="px-4 py-2 bg-neutral-900 text-white rounded-xl text-xs font-semibold hover:bg-neutral-800 transition-colors cursor-pointer !text-white"
                           >
                             Apply
                           </button>
@@ -1057,21 +1052,22 @@ export default function CheckoutClient() {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full py-4 bg-[#2563eb] hover:bg-blue-700 text-white font-bold rounded-2xl shadow-xl shadow-blue-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 text-sm"
+                      style={{ color: "#ffffff", backgroundColor: "#2563eb" }}
+                      className="w-full py-4 bg-[#2563eb] hover:bg-blue-700 text-white font-bold rounded-2xl shadow-xl shadow-blue-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 text-sm !text-white"
                     >
                       {isSubmitting ? (
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 text-white">
                           <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                          <span>Processing Secure Order...</span>
+                          <span className="text-white">Processing Secure Order...</span>
                         </div>
                       ) : paymentMethod === "Razorpay" ? (
-                        <>
-                          <Lock className="w-4 h-4" /> Pay ₹{finalTotal.toLocaleString("en-IN")} via Razorpay
-                        </>
+                        <span className="flex items-center gap-2 text-white font-bold">
+                          <Lock className="w-4 h-4 text-white" /> Pay ₹{finalTotal.toLocaleString("en-IN")} via Razorpay
+                        </span>
                       ) : (
-                        <>
-                          <PackageCheck className="w-4 h-4" /> Place Cash on Delivery Order
-                        </>
+                        <span className="flex items-center gap-2 text-white font-bold">
+                          <PackageCheck className="w-4 h-4 text-white" /> Place Cash on Delivery Order
+                        </span>
                       )}
                     </button>
                     <p className="text-[10px] text-center text-neutral-400 mt-3">
@@ -1160,7 +1156,8 @@ export default function CheckoutClient() {
                 <button
                   type="button"
                   onClick={handleCompleteSimulatedPayment}
-                  className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-sm transition-colors shadow-lg shadow-emerald-600/25 cursor-pointer flex items-center justify-center gap-2"
+                  style={{ color: "#ffffff", backgroundColor: "#059669" }}
+                  className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-sm transition-colors shadow-lg shadow-emerald-600/25 cursor-pointer flex items-center justify-center gap-2 !text-white"
                 >
                   <CheckCircle2 className="w-4 h-4" /> Simulate Successful Razorpay Payment
                 </button>

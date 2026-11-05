@@ -110,6 +110,7 @@ export default function ProductClient({ product }: ProductClientProps) {
                         type="button"
                         onClick={handleBuyNow}
                         className="px-6 py-3.5 bg-[#0c1013] text-white rounded-full font-semibold hover:bg-neutral-800 transition-colors shadow-md cursor-pointer text-sm whitespace-nowrap"
+                        style={{ color: "#ffffff", backgroundColor: "#0c1013" }}
                       >
                         Buy Now
                       </button>

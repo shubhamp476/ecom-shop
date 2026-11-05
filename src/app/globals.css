@@ -128,3 +128,35 @@ html.lenis, html.lenis body {
 .pulse-btn {
   animation: pulse-ring 2.4s infinite cubic-bezier(0.4, 0, 0.6, 1);
 }
+
+/* Ensure button and link text colors and backgrounds are never overridden by webflow.css inherit rule */
+button.text-white,
+a.text-white,
+input[type="submit"].text-white,
+[class*="text-white"],
+.text-white {
+  color: #ffffff !important;
+}
+
+a.bg-\[\#2563eb\],
+a.bg-blue-600,
+button.bg-\[\#2563eb\],
+button.bg-blue-600 {
+  background-color: #2563eb !important;
+  color: #ffffff !important;
+}
+
+button.bg-\[\#0c1013\],
+button.bg-neutral-900,
+.bg-neutral-900 {
+  background-color: #0c1013 !important;
+  color: #ffffff !important;
+}
+
+/* Ensure placeholder text is subtle, clean, and never looks like entered text */
+input::placeholder,
+textarea::placeholder {
+  color: #9ca3af !important;
+  opacity: 0.5 !important;
+  font-weight: 400 !important;
+}

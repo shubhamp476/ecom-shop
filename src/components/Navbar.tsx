@@ -384,6 +384,7 @@ export default function Navbar({ cartCount: propCartCount, onOpenCart }: NavbarP
                   href="/checkout"
                   onClick={handleCloseCart}
                   className="w-full py-3.5 bg-[#2563eb] text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-500/25 cursor-pointer text-center block"
+                  style={{ color: "#ffffff", backgroundColor: "#2563eb" }}
                 >
                   Continue to Checkout →
                 </Link>

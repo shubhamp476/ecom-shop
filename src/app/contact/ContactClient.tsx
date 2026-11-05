@@ -247,7 +247,6 @@ export default function ContactClient() {
                       name="name"
                       value={formData.name}
                       onChange={handleInputChange}
-                      placeholder="e.g. Vikram Mehta"
                       className={`w-full px-4 py-3 rounded-xl border text-sm focus:outline-none transition-all ${
                         errors.name ? "border-red-500 bg-red-50/30" : "border-gray-200 focus:border-blue-600"
                       }`}
@@ -264,7 +263,6 @@ export default function ContactClient() {
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      placeholder="vikram@example.com"
                       className={`w-full px-4 py-3 rounded-xl border text-sm focus:outline-none transition-all ${
                         errors.email ? "border-red-500 bg-red-50/30" : "border-gray-200 focus:border-blue-600"
                       }`}
@@ -283,7 +281,6 @@ export default function ContactClient() {
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      placeholder="9876543210"
                       maxLength={10}
                       className={`w-full px-4 py-3 rounded-xl border text-sm focus:outline-none transition-all ${
                         errors.phone ? "border-red-500 bg-red-50/30" : "border-gray-200 focus:border-blue-600"
@@ -320,7 +317,6 @@ export default function ContactClient() {
                     name="orderNumber"
                     value={formData.orderNumber}
                     onChange={handleInputChange}
-                    placeholder="e.g. GV-123456"
                     className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-blue-600"
                   />
                 </div>
@@ -334,7 +330,6 @@ export default function ContactClient() {
                     name="message"
                     value={formData.message}
                     onChange={handleInputChange}
-                    placeholder="Describe how we can assist you with your order, device, or setup..."
                     className={`w-full px-4 py-3 rounded-xl border text-sm focus:outline-none transition-all resize-none ${
                       errors.message ? "border-red-500 bg-red-50/30" : "border-gray-200 focus:border-blue-600"
                     }`}
@@ -346,17 +341,18 @@ export default function ContactClient() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full py-4 bg-[#2563eb] hover:bg-blue-700 text-white font-bold rounded-2xl shadow-xl shadow-blue-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 text-sm"
+                    style={{ color: "#ffffff", backgroundColor: "#2563eb" }}
+                    className="w-full py-4 bg-[#2563eb] hover:bg-blue-700 text-white font-bold rounded-2xl shadow-xl shadow-blue-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 text-sm !text-white"
                   >
                     {isSubmitting ? (
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 text-white">
                         <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        <span>Logging Ticket...</span>
+                        <span className="text-white">Logging Ticket...</span>
                       </div>
                     ) : (
-                      <>
-                        <Send className="w-4 h-4" /> Submit Inquiry Ticket
-                      </>
+                      <span className="flex items-center gap-2 text-white">
+                        <Send className="w-4 h-4 text-white" /> Submit Inquiry Ticket
+                      </span>
                     )}
                   </button>
                   <p className="text-[11px] text-center text-neutral-400 mt-3">
