@@ -1,5 +1,7 @@
 # Deployment and database status
 
+> **Update:** the FastAPI/PyMongo backend described below has been replaced by a Node.js (Express + MongoDB driver) API in `backend/` with the same HTTP contract. Read "Python API/service" below as the separately hosted backend API; see the README for current deployment steps.
+
 Updated 4 November 2026.
 
 - PyMongo is configured locally with the user-provided Atlas URI. Credentials are stored only in ignored `.env.local`.

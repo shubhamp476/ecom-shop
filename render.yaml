@@ -1,16 +1,20 @@
 services:
   - type: web
     name: ecom-shop-api
-    runtime: python
+    runtime: node
     plan: free
-    buildCommand: pip install -r requirements.txt
-    startCommand: python -m backend.manage indexes && uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    rootDir: backend
+    buildCommand: npm ci && npm run build
+    startCommand: node dist/manage.js indexes && node dist/server.js
     healthCheckPath: /health/ready
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.12.8
+      - key: NODE_VERSION
+        value: "22"
       - key: APP_ENV
         value: production
+      # Test-only dependency; skip its MongoDB binary download on deploy hosts.
+      - key: MONGOMS_DISABLE_POSTINSTALL
+        value: "1"
       - key: MONGODB_URI
         sync: false
       - key: BACKEND_API_KEY

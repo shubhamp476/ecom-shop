@@ -14,7 +14,7 @@ export async function POST(request: Request) {
       body.createdAt = new Date().toISOString();
     }
 
-    // Try forwarding to Python backend / MongoDB if not demo mode
+    // Try forwarding to the Node.js backend / MongoDB if not demo mode
     if (!isDemo()) {
       try {
         const response = await backendFetch("/api/admin/orders", {
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
           return NextResponse.json(data, { status: 201 });
         }
       } catch (backendError) {
-        console.warn("Python backend unreachable, falling back to local order response:", backendError);
+        console.warn("Backend API unreachable, falling back to local order response:", backendError);
       }
     }
 

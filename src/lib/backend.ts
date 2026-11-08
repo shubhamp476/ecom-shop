@@ -29,7 +29,7 @@ export async function proxyApi(request: Request) {
       const data = PRODUCTS.filter((p) => !category || p.categorySlug === category);
       return Response.json({ success: true, source: "demo", count: data.length, data });
     }
-    return Response.json({ success: false, error: "Preview mode: connect the Python backend to manage data." }, { status: 503 });
+    return Response.json({ success: false, error: "Preview mode: connect the Node.js backend to manage data." }, { status: 503 });
   }
   try {
     const headers = new Headers();
@@ -45,6 +45,6 @@ export async function proxyApi(request: Request) {
     }
     return new Response(response.body, { status: response.status, headers: resultHeaders });
   } catch {
-    return Response.json({ success: false, error: "Python API unavailable. Check BACKEND_URL and backend health." }, { status: 503 });
+    return Response.json({ success: false, error: "Backend API unavailable. Check BACKEND_URL and backend health." }, { status: 503 });
   }
 }

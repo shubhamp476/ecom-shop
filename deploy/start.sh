@@ -1,22 +1,22 @@
 #!/bin/sh
 set -eu
-/opt/venv/bin/python -m backend.manage indexes
-/opt/venv/bin/python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000 &
+node /app/backend/dist/manage.js indexes
+PORT=8000 HOST=127.0.0.1 node /app/backend/dist/server.js &
 api_pid=$!
 cleanup() { kill "$api_pid" "${web_pid:-}" 2>/dev/null || true; }
 trap cleanup EXIT INT TERM
 # Make the database-backed API ready before exposing the storefront.
-/opt/venv/bin/python - <<'PY'
-import time, urllib.request
-for attempt in range(60):
-    try:
-        with urllib.request.urlopen('http://127.0.0.1:8000/health/ready', timeout=5) as response:
-            if response.status == 200: break
-    except Exception:
-        time.sleep(1)
-else:
-    raise SystemExit('Python API did not become ready')
-PY
+node --input-type=module -e '
+for (let attempt = 0; attempt < 60; attempt++) {
+  try {
+    const res = await fetch("http://127.0.0.1:8000/health/ready", { signal: AbortSignal.timeout(5000) });
+    if (res.ok) process.exit(0);
+  } catch {}
+  await new Promise((r) => setTimeout(r, 1000));
+}
+console.error("API did not become ready");
+process.exit(1);
+'
 node node_modules/next/dist/bin/next start --hostname 0.0.0.0 --port "${PORT:-10000}" &
 web_pid=$!
 while kill -0 "$api_pid" 2>/dev/null && kill -0 "$web_pid" 2>/dev/null; do sleep 3; done
