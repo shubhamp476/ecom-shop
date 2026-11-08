@@ -50,7 +50,8 @@ next-env.d.ts
 !tsconfig.json
 scratch_capture_all.js
 
-# Python backend and local deployment credentials
+# Backend build output, report tooling caches and local deployment credentials
+backend/dist/
 .venv/
 __pycache__/
 .pytest_cache/

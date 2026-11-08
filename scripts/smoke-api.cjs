@@ -10,7 +10,7 @@ const puppeteer = require('puppeteer-core');
     return {status:r.status,data:await r.json()};
   }
   const publicList = await api('/api/products');
-  assert.equal(publicList.status,200);assert.equal(publicList.data.source,'pymongo');assert(publicList.data.data.length>0);checks.push('Next.js -> FastAPI catalog response');
+  assert.equal(publicList.status,200);assert.equal(publicList.data.source,'mongodb');assert(publicList.data.data.length>0);checks.push('Next.js -> Node.js API catalog response');
   await api('/api/admin/products/BROWSER-TEST','DELETE');
   const created=await api('/api/admin/products','POST',{name:'Browser Integration Phone',sku:'BROWSER-TEST',slug:'browser-integration-phone',category:'Smartphones',categorySlug:'smartphones',price:39999,mrp:44999,stock:4});
   assert.equal(created.status,201);const id=created.data.product._id;checks.push('Product creation through Next.js proxy');
@@ -24,11 +24,11 @@ const puppeteer = require('puppeteer-core');
     if(path==='/admin/reports') await page.waitForFunction(()=>document.body.innerText.includes('Category summary'));
     await page.screenshot({path:`docs/evidence/${label}.png`,fullPage:false});checks.push(`Browser rendered ${path}`);
   }
-  const editResponse=await page.goto(base+'/admin/products/'+id+'/edit',{waitUntil:'domcontentloaded'});assert.equal(editResponse.status(),200);await page.waitForSelector('input');checks.push('Server-rendered product edit reads FastAPI');
+  const editResponse=await page.goto(base+'/admin/products/'+id+'/edit',{waitUntil:'domcontentloaded'});assert.equal(editResponse.status(),200);await page.waitForSelector('input');checks.push('Server-rendered product edit reads the Node.js API');
   const update=await api('/api/admin/products/'+id,'PATCH',{stock:0});assert.equal(update.status,200);assert.equal(update.data.product.availableStock,0);checks.push('Zero-stock update is preserved');
   const deleted=await api('/api/admin/products/'+id,'DELETE');assert.equal(deleted.status,200);
   assert.equal((await api('/api/admin/products/'+id)).status,404);checks.push('Delete and subsequent 404 through proxy');
   await browser.close();assert.deepEqual(errors,[]);
-  fs.writeFileSync('docs/evidence/browser-tests.json',JSON.stringify({database:'isolated mongomock fixture; not Atlas',checks,consoleErrors:errors},null,2));
+  fs.writeFileSync('docs/evidence/browser-tests.json',JSON.stringify({database:'isolated in-memory MongoDB fixture; not Atlas',checks,consoleErrors:errors},null,2));
   console.log(checks.join('\n'));console.log('Browser errors: 0');
 })().catch(e=>{console.error(e);process.exit(1)});

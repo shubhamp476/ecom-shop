@@ -7,8 +7,10 @@
     "build": "next build --webpack",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "backend": "python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000",
-    "test:backend": "python -m pytest backend/tests -q"
+    "backend": "npm --prefix backend run dev",
+    "backend:install": "npm --prefix backend ci",
+    "test:backend": "npm --prefix backend test",
+    "package": "git archive --format=zip --prefix=ECOM-SHOP/ -o ECOM-SHOP-Updated.zip HEAD"
   },
   "dependencies": {
     "clsx": "^2.1.1",
